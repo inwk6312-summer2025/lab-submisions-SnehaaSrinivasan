@@ -1,0 +1,28 @@
+from jinja2 import Environment, FileSystemLoader
+import yaml
+
+# Define the Jinja2 environment
+ENV = Environment(loader=FileSystemLoader('.'))
+
+# Custom filter function
+def get_interface_speed(interface_name):
+    """Returns speed in Mbps based on interface type"""
+    if 'gigabit' in interface_name.lower():
+        return 1000
+    if 'fast' in interface_name.lower():
+        return 100
+    return 'unknown'
+
+# Register the custom filter
+ENV.filters['get_interface_speed'] = get_interface_speed
+
+# Load template
+template = ENV.get_template("template-task8.j2")
+
+# Load YAML interface data
+with open("data-task7.yml") as f:
+    interfaces = yaml.load(f, Loader=yaml.SafeLoader)
+
+# Render and print output
+print(template.render(interface_list=interfaces))
+
